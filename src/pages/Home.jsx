@@ -2,6 +2,9 @@ import React from "react";
 
 const Home = () => {
   return (
+    /**
+     * This page is an default page whenver the website loads design your own and show your designing skills
+     */
     <div className="min-h-screen bg-gray-100">
       <div className="p-8 max-w-4xl mx-auto">
         <h1 className="text-5xl font-bold text-gray-800 mb-6 pt-10">
