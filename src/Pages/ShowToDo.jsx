@@ -19,7 +19,7 @@ const ShowToDo = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 p-6">
+    <div className="p-7" >
       {todos.length === 0 && (
         <div className="col-span-2 py-10 text-white text-center shadow-lg rounded-lg bg-gradient-to-r from-orange-700 via-orange-500 to-orange-300">
           No todos created
