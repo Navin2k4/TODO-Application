@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom"; 
-import {addTodo} from "../slice/todo.slice"
+import { useNavigate, useParams } from "react-router-dom";
 
-const CreateToDo = () => {
-  const navigate = useNavigate(); 
-  const dispatch = useDispatch();
+const EditToDo = () => {
+  const { todoindex } = useParams();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    taskName: "",
-    taskDescription: "",
-    taskPriority: "high",
-    duedate: "",
+    taskName: todos[todoindex].taskName,
+    taskDescription: todos[todoindex].taskDescription,
+    taskPriority: todos[todoindex].taskPriority,
+    duedate: todos[todoindex].duedate,
   });
 
   const handleDataChange = (event) => {
@@ -21,9 +20,9 @@ const CreateToDo = () => {
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault(); 
-    dispatch(addTodo(formData))
-    navigate('/todos')
+    event.preventDefault();
+
+    navigate("/todos");
   };
 
   useEffect(() => {
@@ -32,9 +31,12 @@ const CreateToDo = () => {
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
+      {/* <h1>{todoindex}</h1> */}
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-semibold text-gray-800">Create New Task</h2>
+          <h2 className="text-2xl font-semibold text-gray-800">
+            Create New Task
+          </h2>
           <div className="flex flex-col gap-2">
             <label htmlFor="task" className="font-medium text-gray-700">
               Task Name
@@ -43,6 +45,7 @@ const CreateToDo = () => {
               type="text"
               onChange={handleDataChange}
               id="task"
+              value={formData.taskName}
               name="taskName"
               placeholder="Enter task name"
               className="border border-gray-300 focus:ring-2 focus:ring-orange-500 rounded-md p-2"
@@ -54,6 +57,7 @@ const CreateToDo = () => {
               Task Description
             </label>
             <textarea
+              value={formData.taskDescription}
               name="taskDescription"
               id="description"
               onChange={handleDataChange}
@@ -69,6 +73,7 @@ const CreateToDo = () => {
             <select
               onChange={handleDataChange}
               id="priority"
+              value={formData.taskPriority}
               name="taskPriority"
               className="border border-gray-300 focus:ring-2 focus:ring-orange-500 rounded-md p-2"
             >
@@ -97,7 +102,7 @@ const CreateToDo = () => {
             type="submit"
             className="bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600"
           >
-            Add Task
+            Update Task
           </button>
         </div>
       </form>
@@ -105,4 +110,4 @@ const CreateToDo = () => {
   );
 };
 
-export default CreateToDo;
+export default EditToDo;

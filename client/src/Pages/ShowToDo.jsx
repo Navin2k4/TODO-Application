@@ -1,21 +1,21 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteTodo } from '../slice/todo.slice';
 
 const ShowToDo = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const todos = useSelector((state) => state.todoSlice.todos);
-  console.log(todos);
+
+  const todos = [
+    {taskName:"todo1",taskDescription:"Description", taskPriority:"high",duedate:"14-15-21"}
+  ]
 
   const deleteToDo = (index) => {
     console.log(index);
-    dispatch(deleteTodo(index));
+    window.alert("Yet to implement")
   };
 
   const editTodo = (todoIndex) => {
-    navigate(`/edit/${todoIndex}`);
+    alert("Yet to implement")
+    // navigate(`/edit/${todoIndex}`);
   };
 
   return (
