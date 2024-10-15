@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({});
-
+  const [errorMessage, setErrorMessage] = useState(null);
   const handleOnChange = (e) => {
     setFormData({
       ...formData,
@@ -12,7 +12,15 @@ const SignUp = () => {
   };
   console.log(formData);
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessage("Please fill all the form fields");
+    }
+
+    
+  };
 
   return (
     <div className="max-w-md mx-auto mt-16 bg-gray-200 shadow-lg rounded-lg overflow-hidden">
@@ -80,6 +88,8 @@ const SignUp = () => {
               className="rounded-md p-3 transition duration-200"
             />
           </div>
+
+          {errorMessage ? <p>{errorMessage}</p> : ""}
 
           <button
             type="submit"
