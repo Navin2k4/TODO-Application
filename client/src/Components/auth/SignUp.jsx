@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
+  // Used to navigate to another page from the front end after api request call
+  const navigate = useNavigate();
+
+  // Collect all the data from  the form field
   const handleOnChange = (e) => {
     setFormData({
       ...formData,
@@ -12,14 +17,52 @@ const SignUp = () => {
   };
   console.log(formData);
 
+  /**
+   * This function is used to make the frontend validation and then call tha api for
+   * further data processing in the backend then navigate to the signin page
+   */
   const handleSubmit = async (e) => {
+    // this function prevents the formdata not to be cleared
     e.preventDefault();
-
-    if (!formData.username || !formData.email || !formData.password) {
-      return setErrorMessage("Please fill all the form fields");
+    // frontend validation to check all the fields
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      return setErrorMessage("All fields are required");
     }
-
-    
+    // frontend validation to check the password mismatch
+    if (formData.password !== formData.confirmPassword) {
+      return setErrorMessage("Password dosen't match");
+    }
+    // try to call the backend and make the api call
+    try {
+      // try to concole log the response to see what it carries
+      // this function is similar to that we did using the postman
+      const response = await fetch("api/user/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+        }),
+      });
+      const data = await response.json();
+      // console.log(data);
+      if (response.ok) {
+        setErrorMessage(null);
+        // navigate to the signin page
+        navigate("/signin");
+      } else {
+        setErrorMessage(data.message);
+      }
+    } catch (error) {
+      return setErrorMessage("An error occoured during submission");
+    }
   };
 
   return (
@@ -31,13 +74,13 @@ const SignUp = () => {
           </h2>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="name" className="font-medium text-gray-600">
+            <label htmlFor="username" className="font-medium text-gray-600">
               Full Name
             </label>
             <input
               type="text"
-              id="name"
-              name="name"
+              id="username"
+              name="username"
               onChange={handleOnChange}
               placeholder="Enter your full name"
               className="rounded-md p-3 transition duration-200"
@@ -89,7 +132,7 @@ const SignUp = () => {
             />
           </div>
 
-          {errorMessage ? <p>{errorMessage}</p> : ""}
+          {errorMessage ? <p className="text-red-400">{errorMessage}</p> : ""}
 
           <button
             type="submit"
