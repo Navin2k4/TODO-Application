@@ -2,6 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./route/auth.route.js";
+import todoRoutes from "./route/todo.route.js";
+
 dotenv.config();
 // console.log(process.env.MONGO);
 
@@ -14,12 +16,15 @@ mongoose
     console.log(err);
   });
 
+
 const app = express();
 
 app.use(express.json());
 
 // /api/user/signup
 app.use("/api/user", userRoutes);
+
+app.use("/api", todoRoutes);
 
 // CORS - Cross origin resource sharing
 

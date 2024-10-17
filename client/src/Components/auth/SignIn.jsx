@@ -3,15 +3,40 @@ import { Link } from "react-router-dom";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null);
+
   const handleOnChange = (e) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value.trim(),
     });
   };
-  console.log(formData);
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.usernmae || !formData.email) {
+      setErrorMessage("Please fill all the fields");
+    }
+
+    try {
+      const response = await fetch("api/user/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      console.log(response);
+      const data = await res.response();
+      console.log(data);
+
+      if (response.ok) {
+        // dispatch(signInSuccess(data));
+        setErrorMessage(null);
+        navigate("/");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto mt-20 bg-gray-200 shadow-lg rounded-lg overflow-hidden">
@@ -48,6 +73,8 @@ const SignIn = () => {
               className="border border-gray-300 rounded-md p-2 transition duration-200"
             />
           </div>
+
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
           <button
             type="submit"

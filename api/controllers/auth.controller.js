@@ -1,6 +1,7 @@
 import { errorHandler } from "../utils/error.js";
 import User from "../model/user.model.js";
 import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {
   const { username, email, password, confirmPassword } = req.body;
@@ -39,6 +40,44 @@ export const signup = async (req, res, next) => {
     res.status(201).json({ message: "User created successfully" });
     // console.log("User added to DB");
   } catch (error) {
+    next(errorHandler(error));
+  }
+};
+
+export const signin = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const isValidPassword = await bcryptjs.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // return res.status(200).json({message:"Start sign in"});
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECTET);
+
+    // console.log("JSON web Token : ",token);
+
+    // pass the pasword menas to not include it in the response
+    const { password: pass, ...rest } = user._doc;
+    // console.log(user._doc);
+
+    res
+      .status(200)
+      .cookie("access_token", token, { httpOnly: true })
+      .json(rest);
+  
+    } catch (error) {
     next(errorHandler(error));
   }
 };

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 const CreateToDo = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     taskName: "",
     taskDescription: "",
@@ -17,12 +17,18 @@ const CreateToDo = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); 
-    
-
-
-    navigate('/todos')
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await fetch("/api/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      navigate("/todos");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -33,7 +39,9 @@ const CreateToDo = () => {
     <div className="max-w-md mx-auto mt-10 bg-gray-200 p-6 rounded-lg shadow-lg">
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-semibold text-gray-800">Create New Task</h2>
+          <h2 className="text-2xl font-semibold text-gray-800">
+            Create New Task
+          </h2>
           <div className="flex flex-col gap-2">
             <label htmlFor="task" className="font-medium text-gray-700">
               Task Name
